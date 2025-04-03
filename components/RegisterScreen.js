@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Image } from "react-native";
+import { StyleSheet, View, Text, TextInput, Button, Image, TouchableOpacity,Alert} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-
 export function RegisterScreen() {
   const [image, setImage] = useState(null);
   const [location, setLocation] = useState(null);
@@ -18,7 +17,7 @@ export function RegisterScreen() {
       setImage(result.uri);
     }
   };
-
+  
   const getLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
@@ -31,11 +30,17 @@ export function RegisterScreen() {
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
-      <Text>Registrar Protocolo</Text>
-      <TextInput placeholder="Nome" style={{ borderBottomWidth: 1, marginBottom: 10 }} />
-      <TextInput placeholder="CPF" keyboardType="numeric" style={{ borderBottomWidth: 1, marginBottom: 10 }} />
-      <Button title="Tirar Foto" onPress={pickImage} />
+      <TouchableOpacity onPress={pickImage}>
+        <Image  source={require("../assets/images/perfil.png")} style={{ width: 100, height: 100, marginTop: 10 }}  />
+      </TouchableOpacity>
+      
+      
+      <TextInput placeholder="Nome" style={styles.input} />
+      <TextInput placeholder="CPF" keyboardType="numeric" style={styles.input} />
+      <TextInput placeholder="Telefone" keyboardType="numeric" style={styles.input} />
+      
       {image && <Image source={{ uri: image }} style={{ width: 100, height: 100, marginTop: 10 }} />}
+      
       <Button title="Obter Localização" onPress={getLocation} />
       {location && (
         <MapView
@@ -49,7 +54,27 @@ export function RegisterScreen() {
         >
           <Marker coordinate={{ latitude: location.latitude, longitude: location.longitude }} />
         </MapView>
+        
       )}
+       <View style={{ flex: 1, justifyContent: "flex-end" }}>
+       <Button title="Salvar"  onPress={() => Alert.alert("Salvou!")} style ={styles.btn_Salvar}/>
+       </View>
+      
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+    input:{
+      borderBottomWidth: 1,
+      marginBottom: 10
+
+    },
+    btn_Salvar:{
+    position: "absolute",
+    bottom: 20,
+    left: 0,
+    right: 0,
+    alignSelf: "center",
+    }
+})

@@ -11,6 +11,8 @@
   "dependencies": {
     "@react-navigation/stack": "^7.2.3",
     "expo": "~52.0.41",
+    "expo-asset": "~11.0.5",
+    "expo-image": "^2.0.7",
     "expo-image-picker": "~16.0.6",
     "expo-location": "~18.0.8",
     "expo-router": "~4.0.19",
