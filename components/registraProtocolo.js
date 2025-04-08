@@ -5,6 +5,7 @@ import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
 import { pickImage } from "./camera";
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function RegistraProtocolo() {
 
@@ -33,23 +34,28 @@ export function RegistraProtocolo() {
     setLocation(location.coords);
   };
 
-  const Salvar = () => {
+  const Salvar = async () => {
+    const novoProtocolo = {
+      Nome: nome,
+      Email: email,
+      Telefone: telefone,
+      CPF: cpf,
+      Descricao: descricao,
+    };
+  
+    const protocolos = JSON.parse(await AsyncStorage.getItem("protocolos")) || [];
+    protocolos.push(novoProtocolo);
+    await AsyncStorage.setItem("protocolos", JSON.stringify(protocolos));
 
-      let dados = {
-          "Nome": nome ,
-          "Email" : email,
-          "Telefone" : telefone,
-          "CPF": cpf,
-          "Descricao": descricao,
-      }
-      Toast.show({
-        type: 'success',
-        text1: 'Registro enviado!',
-        text2: 'Registrado com sucesso 👌',
-        visibilityTime: 5000,
-      });
+    Toast.show({
+      type: 'success',
+      text1: 'Registro enviado!',
+      text2: 'Registrado com sucesso 👌',
+      visibilityTime: 5000,
+    });
   };
 
+1
   return (
     <ScrollView vertical style={{ flex: 1, padding: 20 }}>
       <TextInput placeholder="Nome" style={styles.input} value={nome} onChangeText={setNome}/>

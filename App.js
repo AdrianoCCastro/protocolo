@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { RegistraProtocolo } from "./components/registraProtocolo";
-import { ListaProtocolos } from "./components/listaProtocolos";
+import  ListaProtocolos from "./components/listaProtocolos";
 import { Inicio } from "./components/inicio";
 import { Cadastrar } from "./components/Cadastrar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
