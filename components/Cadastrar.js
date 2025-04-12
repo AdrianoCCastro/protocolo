@@ -53,27 +53,27 @@ export function Cadastrar() {
             </TouchableOpacity>
             <TextInput
                 style={styles.input}
-                placeholder="Nome completo"
+                placeholder="Nome completo:"
                 value={nome}
                 onChangeText={setNome}
             />
             <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder="Email:"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
             />
             <TextInput
                 style={styles.input}
-                placeholder="Senha"
+                placeholder="Senha:"
                 value={senha}
                 onChangeText={setSenha}
                 secureTextEntry
             />
             <TextInput
                 style={styles.input}
-                placeholder="Telefone"
+                placeholder="Telefone:"
                 value={telefone}
                 onChangeText={setTelefone}
                 keyboardType="phone-pad"
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         marginBottom: 15,
         paddingHorizontal: 10,
-        borderRadius: 5
+        borderRadius: 5,
     },
     image: {
         width: 200,

@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { RegistraProtocolo } from "./components/registraProtocolo";
-import  ListaProtocolos from "./components/listaProtocolos";
+import { ListaProtocolos} from "./components/listaProtocolos";
 import { Inicio } from "./components/inicio";
 import { Cadastrar } from "./components/Cadastrar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -60,7 +60,8 @@ function LoginScreen({ navigation, onLogin, biometria, autenticar }) {
   return (
     <View style={styles.container}>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Image source={require("./assets/icon.png")} style={styles.img} />
+        <Image source={require("./assets/logo2.jpg")} style={styles.img} />
+        <Text style = {styles.text}>Protocolo Online</Text>
         <TextInput placeholder="Usuário" style={styles.input} />
         <TextInput placeholder="Senha" secureTextEntry style={styles.input} />
         <View style={styles.iconContainer}>
@@ -150,7 +151,8 @@ const styles = StyleSheet.create({
   input:{
     borderBottomWidth: 1,
     width: 200,
-    marginBottom: 10,
+    marginBottom: 20,
+    padding: 10,
   },
   img: {
     width: 100,
@@ -171,4 +173,9 @@ const styles = StyleSheet.create({
     marginHorizontal:10,
      
   },
+  text: {
+    padding: 5,
+    fontSize: 28,
+    fontWeight: 'bold'
+  }
 });
