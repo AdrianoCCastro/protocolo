@@ -50,7 +50,7 @@ export function RegistraProtocolo() {
     Toast.show({
       type: 'success',
       text1: 'Registro enviado!',
-      text2: 'Registrado com sucesso 👌',
+      text2: 'Registrado com sucesso',
       visibilityTime: 5000,
     });
   };
@@ -58,10 +58,10 @@ export function RegistraProtocolo() {
 1
   return (
     <ScrollView vertical style={{ flex: 1, padding: 20 }}>
-      <TextInput placeholder="Nome" style={styles.input} value={nome} onChangeText={setNome}/>
-      <TextInput placeholder="CPF" keyboardType="numeric" style={styles.input} value={cpf} onChangeText={setCpf} />
-      <TextInput placeholder="Email" keyboardType="email" style={styles.input} value={email} onChangeText={setEmail} />
-      <TextInput placeholder="Telefone" keyboardType="numeric" style={styles.input} value={telefone} onChangeText={setTelefone} />
+      <TextInput placeholder="Nome:" style={styles.input} value={nome} onChangeText={setNome}/>
+      <TextInput placeholder="CPF:" keyboardType="numeric" style={styles.input} value={cpf} onChangeText={setCpf} />
+      <TextInput placeholder="Email:" keyboardType="email" style={styles.input} value={email} onChangeText={setEmail} />
+      <TextInput placeholder="Telefone:" keyboardType="numeric" style={styles.input} value={telefone} onChangeText={setTelefone} />
       <TextInput
         style={styles.inputDescricao}
         multiline={true}
@@ -121,6 +121,11 @@ const styles = StyleSheet.create({
   input: {
     borderBottomWidth: 1,
     marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 5,
   },
   btn_Salvar: {
     position: "absolute",
