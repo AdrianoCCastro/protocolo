@@ -57,7 +57,47 @@ function LogoutScreen({ onLogout }) {
 }
 
 // Tela de Login
-function LoginScreen({ navigation, onLogin, biometria, autenticar }) {
+function LoginScreen({ navigation,onLogin,biometria, autenticar }) {
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+
+  const realizarLogin = async () => {
+    try {
+      const response = await fetch("http://192.168.0.101:8000/usuario/login/", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          senha: senha,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        onLogin();
+        Toast.show({
+          type: 'success',
+          text1: 'Login realizado com sucesso!',
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: data.erro || 'Erro no login',
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Erro de conexão',
+        text2: error.message,
+      });
+    }
+  };
+  
+
   return (
     <View style = {styles.container}>
                 <Animatable.View animation = 'fadeInLeft' delay={500} style = {styles.containerHeader}>
@@ -65,21 +105,25 @@ function LoginScreen({ navigation, onLogin, biometria, autenticar }) {
                 </Animatable.View>
     
                 <Animatable.View animation = 'fadeInUp' style = {styles.containerForm}>
-                    <Text styles = {styles.title}>Email</Text>
-    
+                    <Text styles = {styles.title}>Email</Text>    
                     <TextInput
-                        placeholder = "Digite um email..."
-                        style = { styles.input}
+                      placeholder="Digite um email..."
+                      style={styles.input}
+                      value={email}
+                      onChangeText={setEmail}
                     />
-    
+                        
                     <Text styles = {styles.title}>Senha</Text>
                     <TextInput
-                        placeholder = "Digite a sua senha"
-                        style = { styles.input}
+                      placeholder="Digite a sua senha"
+                      style={styles.input}
+                      secureTextEntry
+                      value={senha}
+                      onChangeText={setSenha}
                     />
-    
+                        
                     <TouchableOpacity style = {styles.button}
-                        onPress={onLogin}>
+                        onPress={realizarLogin}>
                         <Text style = {styles.buttonText}>Acessar</Text>
                     </TouchableOpacity>
     

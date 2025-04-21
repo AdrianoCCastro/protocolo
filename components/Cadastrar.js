@@ -3,32 +3,67 @@ import { StyleSheet, View, Text, TextInput, Button, Image, TouchableOpacity, Ale
 import { pickImage } from "./camera";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from 'react-native-toast-message';
+import axios from 'axios';
+import { ScrollView } from "react-native-gesture-handler";
+import { useNavigation } from '@react-navigation/native';
 
 
 export function Cadastrar() {
     const [images, setImages] = useState([]);
     const [nome, setNome] = useState('');
+    const [sobreNome, setSobreNome] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [telefone, setTelefone] = useState('');
+    const navigation = useNavigation();
 
 
-    const Salvar = () => {
-       
-        let dados = {
-            "Nome": nome ,
-            "Email" : email,
-            "Telefone" : telefone,
-            "senha": senha,
-        }
+    
+
+    const Salvar = async () => {
+      const formData = new FormData();
+    
+      formData.append("first_name", nome);
+      formData.append("last_name", sobreNome);
+      formData.append("email", email);
+      formData.append("telefone", telefone);
+      formData.append("password", senha);
+      formData.append("username", email);
+    
+      if (images.length > 0) {
+        formData.append("foto", {
+          uri: images[0],
+          type: "image/jpeg",
+          name: "profile.jpg"
+        });
+      }
+    
+      try {
+        const response = await axios.post("http://192.168.0.101:8000/usuario/add/", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+    
         Toast.show({
-            type: 'success',
-            text1: 'Cadastro enviado!',
-            text2: 'Usuário cadastrado com sucesso 👌',
-            visibilityTime: 5000, // 5 segundos
-          });
-        console.log(dados);
+          type: 'success',
+          text1: 'Cadastro realizado!',
+          text2: response.data.message,
+        });
+
+        setTimeout(() => {
+          navigation.navigate('Login');
+        }, 2000);
+      } catch (error) {
+        console.error(error.response.data);
+        Toast.show({
+          type: 'error',
+          text1: 'Erro no cadastro',
+          text2: 'Verifique os dados e tente novamente',
+        });
+      }
     };
+    
 
     const handlePickImage = async () => {
         const uri = await pickImage();
@@ -53,9 +88,15 @@ export function Cadastrar() {
             </TouchableOpacity>
             <TextInput
                 style={styles.input}
-                placeholder="Nome completo:"
+                placeholder="Nome:"
                 value={nome}
                 onChangeText={setNome}
+            />
+            <TextInput
+                style={styles.input}
+                placeholder="Sobrenome:"
+                value={sobreNome}
+                onChangeText={setSobreNome}
             />
             <TextInput
                 style={styles.input}
@@ -81,7 +122,7 @@ export function Cadastrar() {
 
            
             <View style={styles.iconContainer}>
-                <TouchableOpacity onPress={pickImage} style={styles.iconButton}>
+                <TouchableOpacity onPress={handlePickImage} style={styles.iconButton}>
                     <Ionicons name="camera" size={32} color="black" />
                 </TouchableOpacity>
 
@@ -120,7 +161,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 15,
         alignSelf: 'center',
-        borderRadius: 30,
+        borderRadius: 100,
         borderWidth: 7,            
         borderColor: '#000',
     },

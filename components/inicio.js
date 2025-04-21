@@ -21,7 +21,7 @@ export function Inicio(){
                 <Text style = {styles.title}>Protocole sua solicitação em qualquer lugar
                       de modo prático!
                 </Text>
-                <Text style = {styles.text}>REgistra agora mesmo.</Text>
+                <Text style = {styles.text}>Registre agora mesmo.</Text>
 
                 <TouchableOpacity style = {styles.button}
                 onPress={ () => navigation.navigate('Registrar')}>
