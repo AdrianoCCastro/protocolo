@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, TextInput, Button, Image, TouchableOpacity, Alert } from "react-native";
+import { StyleSheet, View, Text, TextInput, Button, Image, TouchableOpacity, ScrollView } from "react-native";
 import { pickImage } from "./camera";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
-import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation } from '@react-navigation/native';
 
 
@@ -12,6 +11,7 @@ export function Cadastrar() {
     const [images, setImages] = useState([]);
     const [nome, setNome] = useState('');
     const [sobreNome, setSobreNome] = useState('');
+    const [CPF, setCPF] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
     const [telefone, setTelefone] = useState('');
@@ -26,6 +26,7 @@ export function Cadastrar() {
       formData.append("first_name", nome);
       formData.append("last_name", sobreNome);
       formData.append("email", email);
+      formData.append("CPF", CPF);
       formData.append("telefone", telefone);
       formData.append("password", senha);
       formData.append("username", email);
@@ -74,7 +75,7 @@ export function Cadastrar() {
       
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.title}>Cadastro</Text>
             <TouchableOpacity onPress={handlePickImage}>
             <Image
@@ -97,6 +98,12 @@ export function Cadastrar() {
                 placeholder="Sobrenome:"
                 value={sobreNome}
                 onChangeText={setSobreNome}
+            />
+             <TextInput
+                style={styles.input}
+                placeholder="CPF:"
+                value={CPF}
+                onChangeText={setCPF}
             />
             <TextInput
                 style={styles.input}
@@ -131,7 +138,7 @@ export function Cadastrar() {
                 </TouchableOpacity>
             </View>
              <Toast position='center' />
-        </View>
+        </ScrollView>
         
     );
 }
@@ -140,7 +147,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 20,
         flex: 1,
-        backgroundColor: "#fff"
+        backgroundColor: "#fff",
     },
     title: {
         fontSize: 24,
@@ -169,6 +176,7 @@ const styles = StyleSheet.create({
         flexDirection: "row", 
         justifyContent: "space-around", 
         alignItems: "center", 
-        marginVertical: 10, 
+        marginVertical: 10,
+        padding:20 
       },
 });

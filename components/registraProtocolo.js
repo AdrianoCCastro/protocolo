@@ -1,26 +1,50 @@
-import React, { useState } from "react";
-import {StyleSheet,View,Text,TextInput,Button,Image,TouchableOpacity,Alert,ScrollView} from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  Button,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
 import { pickImage } from "./camera";
-import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from "axios";
+import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from '@react-navigation/native';
 
 export function RegistraProtocolo() {
-
   const [images, setImages] = useState([]);
   const [location, setLocation] = useState(null);
-  const [nome,setNome]= useState(null);
-  const [cpf,setCpf]= useState(null);
-  const [email,setEmail]= useState(null);
-  const [telefone,setTelefone]= useState(null);
-  const [descricao,setDescricao]= useState(null);  
+  const [nome, setNome] = useState(null);
+  const [cpf, setCpf] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [telefone, setTelefone] = useState(null);
+  const [descricao, setDescricao] = useState(null);
+  const [usuarioId, setUsuarioId] = useState(null);
+  const [titulo, setTitulo] = useState(null);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const buscarUsuario = async () => {
+      const user = await AsyncStorage.getItem("usuario");
+      if (user) {
+        const userData = JSON.parse(user);
+        setUsuarioId(userData.id);
+      }
+    };
+    buscarUsuario();
+  }, []);
 
   const handlePickImage = async () => {
     const uri = await pickImage();
     if (uri) {
-      setImages((prev) => [...prev, uri]); 
+      setImages((prev) => [...prev, { uri }]);
     }
   };
 
@@ -32,36 +56,89 @@ export function RegistraProtocolo() {
     }
     let location = await Location.getCurrentPositionAsync({});
     setLocation(location.coords);
+    
   };
 
-  const Salvar = async () => {
-    const novoProtocolo = {
-      Nome: nome,
-      Email: email,
-      Telefone: telefone,
-      CPF: cpf,
-      Descricao: descricao,
-    };
+  const enviarProtocolo = async () => {
+
+    const formData = new FormData();    
+    const usuarioId = await AsyncStorage.getItem('usuario_id');
+
+    if (!usuarioId) {
+      Toast.show({
+        type: 'error',
+        text1: 'Erro',
+        text2: 'Usuário não identificado. Faça login novamente.',
+      });
+      return;
+    }
+    
+    // Adiciona os dados ao formData
+    formData.append("titulo", titulo);
+    formData.append("nome", nome);
+    formData.append("cpf", cpf);
+    formData.append("email", email);
+    formData.append("telefone", telefone);
+    formData.append("descricao", descricao);
+    formData.append("id_usuario", usuarioId);
+    formData.append("latitude", location.latitude.toString());
+    formData.append("longitude", location.longitude.toString());
+
   
-    const protocolos = JSON.parse(await AsyncStorage.getItem("protocolos")) || [];
-    protocolos.push(novoProtocolo);
-    await AsyncStorage.setItem("protocolos", JSON.stringify(protocolos));
 
-    Toast.show({
-      type: 'success',
-      text1: 'Registro enviado!',
-      text2: 'Registrado com sucesso',
-      visibilityTime: 5000,
+
+    images.forEach((img, index) => {
+      formData.append("imagens", {
+        uri: img.uri,
+        name: `image_${index}.jpg`,
+        type: "image/jpeg",
+      });
     });
-  };
+  
+  
+    try {
+      const response = await fetch("http://192.168.0.101:8000/processo/registrar_protocolo/", {
+        method: "POST",
+        body: formData,
+        headers: {
+         
+        },
+      });
 
-1
+      const data = await response.json();
+      console.log("Resposta:", data);
+
+      if (response.ok) {
+        Toast.show({
+          type: 'success',
+          text1: 'Protocolo enviado com sucesso!',
+        });
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Erro ao enviar protocolo',
+          text2: data.error || 'Tente novamente mais tarde.',
+        });
+      }
+    } catch (error) {
+      console.log("Erro:", error);
+      Toast.show({
+        type: 'error',
+        text1: 'Erro de rede',
+        text2: error.message,
+      });
+    }
+  };
+  setTimeout(() => {
+    navigation.navigate('Protocolos');
+  }, 2000);
   return (
-    <ScrollView vertical style={{ flex: 1, padding: 20 }}>
-      <TextInput placeholder="Nome:" style={styles.input} value={nome} onChangeText={setNome}/>
-      <TextInput placeholder="CPF:" keyboardType="numeric" style={styles.input} value={cpf} onChangeText={setCpf} />
-      <TextInput placeholder="Email:" keyboardType="email" style={styles.input} value={email} onChangeText={setEmail} />
-      <TextInput placeholder="Telefone:" keyboardType="numeric" style={styles.input} value={telefone} onChangeText={setTelefone} />
+    <ScrollView style={{ flex: 1, padding: 20 }}>
+      <TextInput placeholder="Título:" style={styles.input} value={titulo} onChangeText={setTitulo} />
+      <TextInput placeholder="Nome:" style={styles.input} value={nome} onChangeText={setNome} />
+      <TextInput placeholder="CPF:" keyboardType="phone-pad" style={styles.input} value={cpf} onChangeText={setCpf} />
+      <TextInput placeholder="Email:" keyboardType="email-address" style={styles.input} value={email} onChangeText={setEmail} />
+      <TextInput placeholder="Telefone:" keyboardType="phone-pad" style={styles.input} value={telefone} onChangeText={setTelefone} />
       <TextInput
         style={styles.inputDescricao}
         multiline={true}
@@ -70,19 +147,18 @@ export function RegistraProtocolo() {
         value={descricao}
         onChangeText={setDescricao}
       />
-      <Toast position='center' />
+
+      <Toast position="center" />
 
       <View style={styles.iconContainer}>
         <TouchableOpacity onPress={handlePickImage} style={styles.iconButton}>
           <Ionicons name="camera" size={32} color="black" />
         </TouchableOpacity>
-
         <TouchableOpacity onPress={getLocation} style={styles.iconButton}>
           <Ionicons name="location-outline" size={32} color="black" />
         </TouchableOpacity>
       </View>
 
-      
       {images.length > 0 && (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
           {images.map((uri, index) => (
@@ -95,7 +171,6 @@ export function RegistraProtocolo() {
         </ScrollView>
       )}
 
-      
       {location && (
         <MapView
           style={{ width: "100%", height: 200, marginTop: 10 }}
@@ -110,8 +185,8 @@ export function RegistraProtocolo() {
         </MapView>
       )}
 
-      <View style={{ flex: 0, justifyContent: "flex-end", marginBottom : 40 }}>
-        <Button title="Salvar" onPress={Salvar} style={styles.btn_Salvar} />
+      <View style={{ marginTop: 20 }}>
+        <Button title="Salvar" onPress={enviarProtocolo} />
       </View>
     </ScrollView>
   );
@@ -122,26 +197,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     padding: 10,
     borderRadius: 5,
     marginTop: 5,
-  },
-  btn_Salvar: {
-    position: "absolute",
-    bottom: 20,
-    left: 0,
-    right: 0,
-    alignSelf: "center",
-  },
-  iconContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-    marginVertical: 10,
-  },
-  iconButton: {
-    padding: 10,
   },
   inputDescricao: {
     borderWidth: 1,
@@ -151,5 +210,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     height: 150,
     textAlignVertical: "top",
+  },
+  iconContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  iconButton: {
+    padding: 10,
   },
 });

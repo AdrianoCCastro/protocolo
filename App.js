@@ -12,12 +12,14 @@ import { Cadastrar } from "./components/Cadastrar";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as Animatable from 'react-native-animatable'
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 // Telas com Abas
 function TelaSegura({ onLogout }) {
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -61,6 +63,22 @@ function LoginScreen({ navigation,onLogin,biometria, autenticar }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
+  const salvarUsuarioLogado = async (token, user) => {
+    console.log("Salvando token:", token);
+    console.log("Salvando usuário:", user);
+  
+    await AsyncStorage.setItem("token", token);
+    await AsyncStorage.setItem("usuario", JSON.stringify(user));
+  
+    // Verificar se salvou corretamente
+    const tokenSalvo = await AsyncStorage.getItem("token");
+    const usuarioSalvo = await AsyncStorage.getItem("usuario");
+  
+    console.log("Token salvo:", tokenSalvo);
+    console.log("Usuário salvo:", JSON.parse(usuarioSalvo));
+  };
+
+  
   const realizarLogin = async () => {
     try {
       const response = await fetch("http://192.168.0.101:8000/usuario/login/", {
@@ -75,17 +93,27 @@ function LoginScreen({ navigation,onLogin,biometria, autenticar }) {
       });
   
       const data = await response.json();
+      console.log("Resposta da API:", response);
   
       if (response.ok) {
-        onLogin();
+        // Salva apenas o ID do usuário
+        await AsyncStorage.setItem("usuario_id", data.usuario_id.toString());
+
+        const idSalvo = await AsyncStorage.getItem("usuario_id");
+        console.log("Usuário ID salvo:", idSalvo);
+                
         Toast.show({
           type: 'success',
           text1: 'Login realizado com sucesso!',
+          text2: 'Aguarde...',
         });
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        onLogin();
       } else {
         Toast.show({
           type: 'error',
-          text1: data.erro || 'Erro no login',
+          text1: data.error || 'Erro no login',
         });
       }
     } catch (error) {
@@ -190,7 +218,7 @@ export default function App() {
       </Stack.Navigator>
       
     </NavigationContainer>
-    
+    <Toast />
     </>
     
     
