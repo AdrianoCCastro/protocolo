@@ -18,6 +18,7 @@ import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
 
+
 export function RegistraProtocolo() {
   const [images, setImages] = useState([]);
   const [location, setLocation] = useState(null);
@@ -29,6 +30,7 @@ export function RegistraProtocolo() {
   const [usuarioId, setUsuarioId] = useState(null);
   const [titulo, setTitulo] = useState(null);
   const navigation = useNavigation();
+ 
 
   useEffect(() => {
     const buscarUsuario = async () => {
