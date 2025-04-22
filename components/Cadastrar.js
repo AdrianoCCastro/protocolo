@@ -40,7 +40,7 @@ export function Cadastrar() {
       }
     
       try {
-        const response = await axios.post("http://192.168.0.101:8000/usuario/add/", formData, {
+        const response = await axios.post(`${API_BASE_URL}/usuario/add/`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

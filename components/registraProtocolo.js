@@ -99,7 +99,7 @@ export function RegistraProtocolo() {
   
   
     try {
-      const response = await fetch("http://192.168.0.101:8000/processo/registrar_protocolo/", {
+      const response = await fetch(`${API_BASE_URL}/processo/registrar_protocolo/`, {
         method: "POST",
         body: formData,
         headers: {
