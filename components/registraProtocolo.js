@@ -88,17 +88,6 @@ export function RegistraProtocolo() {
     formData.append("longitude", location.longitude.toString());
 
   
-
-
-    images.forEach((img, index) => {
-      formData.append("imagens", {
-        uri: img.uri,
-        name: `image_${index}.jpg`,
-        type: "image/jpeg",
-      });
-    });
-  
-  
     try {
       const response = await fetch(`${API_BASE_URL}/processo/registrar_protocolo/`, {
         method: "POST",
@@ -165,12 +154,13 @@ export function RegistraProtocolo() {
         </TouchableOpacity>
       </View>
 
+      
       {images.length > 0 && (
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
-          {images.map((uri, index) => (
+          {images.map((img, index) => (
             <Image
               key={index}
-              source={{ uri }}
+              source={{ uri: img.uri }}
               style={{ width: 100, height: 100, marginRight: 10, borderRadius: 8 }}
             />
           ))}
