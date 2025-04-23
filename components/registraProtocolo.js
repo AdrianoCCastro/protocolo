@@ -17,6 +17,7 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
+import { API_BASE_URL } from "../config";
 
 
 export function RegistraProtocolo() {
@@ -111,9 +112,14 @@ export function RegistraProtocolo() {
       console.log("Resposta:", data);
 
       if (response.ok) {
+        setTimeout(() => {
+          navigation.navigate('Protocolos');
+        }, 2000);
         Toast.show({
           type: 'success',
           text1: 'Protocolo enviado com sucesso!',
+
+          
         });
       } else {
         Toast.show({
@@ -131,9 +137,7 @@ export function RegistraProtocolo() {
       });
     }
   };
-  setTimeout(() => {
-    navigation.navigate('Protocolos');
-  }, 2000);
+
   return (
     <ScrollView style={{ flex: 1, padding: 20 }}>
       <TextInput placeholder="Título:" style={styles.input} value={titulo} onChangeText={setTitulo} />

@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { API_BASE_URL } from "../config";
 
 
 export function Cadastrar() {
@@ -16,10 +17,7 @@ export function Cadastrar() {
     const [senha, setSenha] = useState('');
     const [telefone, setTelefone] = useState('');
     const navigation = useNavigation();
-
-
     
-
     const Salvar = async () => {
       const formData = new FormData();
     
@@ -40,23 +38,33 @@ export function Cadastrar() {
       }
     
       try {
-        const response = await axios.post(`${API_BASE_URL}/usuario/add/`, formData, {
+        const response = await fetch(`${API_BASE_URL}/usuario/add/`, {
+          method: "POST",
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          body: formData
         });
+    
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.log("Erro no backend:", errorData);
+          throw new Error("Erro na requisição");
+        }
+    
+        const data = await response.json();
     
         Toast.show({
           type: 'success',
           text1: 'Cadastro realizado!',
-          text2: response.data.message,
+          text2: data.message || 'Usuário cadastrado com sucesso!',
         });
-
+    
         setTimeout(() => {
           navigation.navigate('Login');
         }, 2000);
       } catch (error) {
-        console.error(error.response.data);
+        console.error("Erro no cadastro:", error.message);
         Toast.show({
           type: 'error',
           text1: 'Erro no cadastro',

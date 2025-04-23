@@ -13,11 +13,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as Animatable from 'react-native-animatable'
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_BASE_URL } from "./config";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-// Telas com Abas
+
 function TelaSegura({ onLogout }) {
 
   return (
@@ -62,6 +63,7 @@ function LogoutScreen({ onLogout }) {
 function LoginScreen({ navigation,onLogin,biometria, autenticar }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  
 
   const salvarUsuarioLogado = async (token, user) => {
     console.log("Salvando token:", token);
@@ -80,8 +82,9 @@ function LoginScreen({ navigation,onLogin,biometria, autenticar }) {
 
   
   const realizarLogin = async () => {
+   
     try {
-      const response = await fetch("http://192.168.0.101:8000/usuario/login/", {
+      const response = await fetch(`${API_BASE_URL}/usuario/login/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
