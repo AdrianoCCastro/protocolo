@@ -7,13 +7,11 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Alert,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
 import { pickImage } from "./camera";
-import axios from "axios";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
@@ -86,6 +84,13 @@ export function RegistraProtocolo() {
     formData.append("id_usuario", usuarioId);
     formData.append("latitude", location.latitude.toString());
     formData.append("longitude", location.longitude.toString());
+    images.forEach((image, index) => {
+      formData.append("imagens", {
+        uri: image.uri,
+        name: `image_${index}.jpg`,
+        type: "image/jpeg",
+      });
+    });
 
   
     try {
