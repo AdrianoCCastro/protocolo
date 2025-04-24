@@ -1,13 +1,15 @@
-import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import {React} from "react";
+import { View, Text, Image, StyleSheet,Button } from "react-native";
+import { API_BASE_URL } from "../config";
 
 export default function Card({
   imgSrc,
-  spanTag,
   titulo,
   descricao,  
   status,
   color,
+  protocolo,
+  onUpdate,
 }) {
   return (
     <View style={styles.card}>
@@ -22,6 +24,31 @@ export default function Card({
           <Text style={styles.footerNumber}>{status}</Text>
           
         </View>
+        {/*   <View style={{ marginBottom: 20 }}>
+        <Button
+            title="Avançar estado"
+            onPress={async () => {
+              try {
+                const response = await fetch(
+                  `${API_BASE_URL}/processo/altera_estado/${protocolo}/`,
+                  { method: "POST" }
+                );
+        
+                const result = await response.json();
+                if (response.ok) {
+                  console.log("Sucesso", result.mensagem);
+                  onUpdate();
+                  
+                } else {
+                  Alert.alert("Erro", result.detail || "Não foi possível alterar o estado");
+                }
+              } catch (error) {
+                console.error("Erro ao alterar estado:", error);
+                console.log("Erro", "Erro ao tentar alterar estado.");
+              }
+            }}
+          />  
+        </View>*/}
       </View>
     </View>
   );

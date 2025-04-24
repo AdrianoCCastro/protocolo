@@ -19,6 +19,8 @@ import { API_BASE_URL } from "../config";
 
 
 export function RegistraProtocolo() {
+
+
   const [images, setImages] = useState([]);
   const [location, setLocation] = useState(null);
   const [nome, setNome] = useState(null);
@@ -30,17 +32,21 @@ export function RegistraProtocolo() {
   const [titulo, setTitulo] = useState(null);
   const navigation = useNavigation();
  
-
   useEffect(() => {
     const buscarUsuario = async () => {
       const user = await AsyncStorage.getItem("usuario");
       if (user) {
         const userData = JSON.parse(user);
-        setUsuarioId(userData.id);
+
+        setNome(userData.first_name);
+        setCpf(userData.CPF);
+        setEmail(userData.email);
+        setTelefone(userData.telefone);
       }
     };
     buscarUsuario();
   }, []);
+
 
   const handlePickImage = async () => {
     const uri = await pickImage();
@@ -65,11 +71,12 @@ export function RegistraProtocolo() {
     const formData = new FormData();    
     const usuarioId = await AsyncStorage.getItem('usuario_id');
 
-    if (!usuarioId) {
+
+    if (!location) {
       Toast.show({
         type: 'error',
-        text1: 'Erro',
-        text2: 'Usuário não identificado. Faça login novamente.',
+        text1: 'Formulário sem localização',
+        text2: 'Selecione a localização por favor!',
       });
       return;
     }

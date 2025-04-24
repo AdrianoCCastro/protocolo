@@ -82,7 +82,6 @@ function LoginScreen({ navigation,onLogin,biometria, autenticar }) {
 
   
   const realizarLogin = async () => {
-   
     try {
       const response = await fetch(`${API_BASE_URL}/usuario/login/`, {
         method: 'POST',
@@ -96,21 +95,23 @@ function LoginScreen({ navigation,onLogin,biometria, autenticar }) {
       });
   
       const data = await response.json();
-      console.log("Resposta da API:", response);
+      console.log("Resposta da API:", data);
   
       if (response.ok) {
-        // Salva apenas o ID do usuário
-        await AsyncStorage.setItem("usuario_id", data.usuario_id.toString());
-
-        const idSalvo = await AsyncStorage.getItem("usuario_id");
-        console.log("Usuário ID salvo:", idSalvo);
-                
+        const usuario = data.usuario;
+  
+        await AsyncStorage.setItem("usuario", JSON.stringify(usuario));
+  
+        const usuarioSalvo = await AsyncStorage.getItem("usuario");
+        console.log("Usuário salvo:", JSON.parse(usuarioSalvo));
+        
+  
         Toast.show({
           type: 'success',
           text1: 'Login realizado com sucesso!',
           text2: 'Aguarde...',
         });
-
+  
         await new Promise(resolve => setTimeout(resolve, 2000));
         onLogin();
       } else {

@@ -112,7 +112,7 @@ export function Cadastrar() {
                 placeholder="CPF:"
                 value={CPF}
                 onChangeText={setCPF}
-                keyboardType="numeric"
+                keyboardType="phone-pad"
             />
             <TextInput
                 style={styles.input}
