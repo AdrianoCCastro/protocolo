@@ -168,7 +168,7 @@ export function RegistraProtocolo() {
 
       
       {images.length > 0 && (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 10 }}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={true} style={{ marginBottom: 10 }}>
           {images.map((img, index) => (
             <Image
               key={index}
@@ -181,7 +181,7 @@ export function RegistraProtocolo() {
 
       {location && (
         <MapView
-          style={{ width: "100%", height: 200, marginTop: 10 }}
+          style={styles.mapa}
           initialRegion={{
             latitude: location.latitude,
             longitude: location.longitude,
@@ -193,7 +193,7 @@ export function RegistraProtocolo() {
         </MapView>
       )}
 
-      <View style={{ marginTop: 20 }}>
+      <View style={styles.botao}>
         <Button title="Salvar" onPress={enviarProtocolo} />
       </View>
     </ScrollView>
@@ -228,4 +228,13 @@ const styles = StyleSheet.create({
   iconButton: {
     padding: 10,
   },
+  botao:{
+    marginTop: 20, 
+    padding: 25,
+  },
+  mapa:{ 
+    width: "100%",
+    height: 200, 
+    marginTop: 10
+  }
 });
