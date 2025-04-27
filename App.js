@@ -14,10 +14,11 @@ import * as Animatable from 'react-native-animatable'
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL } from "./config";
+import ExibeProtocolo from "./components/exibe_protocolo";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
-
+const LogadoStack = createNativeStackNavigator();
 
 function TelaSegura({ onLogout }) {
 
@@ -42,8 +43,20 @@ function TelaSegura({ onLogout }) {
       <Tab.Screen name="Protocolos" component={ListaProtocolos} />
       <Tab.Screen name="Sair">
         {() => <LogoutScreen onLogout={onLogout} />}
-      </Tab.Screen>
+      </Tab.Screen>      
     </Tab.Navigator>
+    
+  );
+}
+
+function StackLogado({ onLogout }) {
+  return (
+    <LogadoStack.Navigator screenOptions={{ headerShown: false }} >
+      <LogadoStack.Screen name="Tabs">
+        {() => <TelaSegura onLogout={onLogout} />}
+      </LogadoStack.Screen>
+      <LogadoStack.Screen name="Exibe_Protocolo" component={ExibeProtocolo} />
+    </LogadoStack.Navigator>
   );
 }
 
@@ -216,7 +229,7 @@ export default function App() {
           </>
         ) : (
           <Stack.Screen name="Main">
-            {() => <TelaSegura onLogout={() => setLogado(false)} />}
+            {() => <StackLogado onLogout={() => setLogado(false)} />}
           </Stack.Screen>
         )}
       </Stack.Navigator>

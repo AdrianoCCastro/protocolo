@@ -1,5 +1,5 @@
 import {React} from "react";
-import { View, Text, Image, StyleSheet,Button } from "react-native";
+import { View, Text, Image, StyleSheet,Button,TouchableOpacity} from "react-native";
 import { API_BASE_URL } from "../config";
 
 export default function Card({
@@ -10,9 +10,10 @@ export default function Card({
   color,
   protocolo,
   onUpdate,
+  onPress
 }) {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={() => onPress(protocolo)}>
       <Image source={{ uri: imgSrc }} style={styles.image} />
       <View style={styles.body}>
         <Text style={styles.title}>{titulo}</Text>
@@ -24,33 +25,8 @@ export default function Card({
           <Text style={styles.footerNumber}>{status}</Text>
           
         </View>
-        {/*   <View style={{ marginBottom: 20 }}>
-        <Button
-            title="Avançar estado"
-            onPress={async () => {
-              try {
-                const response = await fetch(
-                  `${API_BASE_URL}/processo/altera_estado/${protocolo}/`,
-                  { method: "POST" }
-                );
-        
-                const result = await response.json();
-                if (response.ok) {
-                  console.log("Sucesso", result.mensagem);
-                  onUpdate();
-                  
-                } else {
-                  Alert.alert("Erro", result.detail || "Não foi possível alterar o estado");
-                }
-              } catch (error) {
-                console.error("Erro ao alterar estado:", error);
-                console.log("Erro", "Erro ao tentar alterar estado.");
-              }
-            }}
-          />  
-        </View>*/}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

@@ -3,11 +3,17 @@ import { ScrollView,Button, StyleSheet } from "react-native";
 import Card from "./card";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API_BASE_URL } from "../config"; 
+import { API_BASE_URL } from "../config";
+import { useNavigation } from "@react-navigation/native";
 
 export default function App() {
   const [protocolos, setProtocolos] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
+  const navigation = useNavigation();
+
+  const abrirProtocolo = (protocoloId) => {
+    navigation.getParent().navigate("Exibe_Protocolo", { protocoloId });
+  };
  
   const buscarProtocolosDoUsuario = async () => {
     try {
@@ -53,6 +59,7 @@ export default function App() {
             color={protocolo.cor}
             protocolo={protocolo.id}
             onUpdate={recarregar}
+            onPress={abrirProtocolo}
           />
         ))}
       </ScrollView>
