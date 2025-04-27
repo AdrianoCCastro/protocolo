@@ -49,9 +49,28 @@ export function RegistraProtocolo() {
 
 
   const handlePickImage = async () => {
+   
+    if (images.length >= 5) {
+      Toast.show({
+        type: 'error', 
+        text1: 'Limite de imagens atingido!',
+        text2: 'Você só pode adicionar até 5 imagens.',
+      });
+      return;
+    }
+  
     const uri = await pickImage();
     if (uri) {
       setImages((prev) => [...prev, { uri }]);
+  
+      
+      if (prev.length + 1 === 5) {
+        Toast.show({
+          type: 'info',
+          text1: 'Limite de imagens atingido!',
+          text2: 'Você adicionou 5 imagens.',
+        });
+      }
     }
   };
 
@@ -110,18 +129,16 @@ export function RegistraProtocolo() {
       });
 
       const data = await response.json();
-      console.log("Resposta:", data);
-
+            
       if (response.ok) {
-        setTimeout(() => {
-          navigation.navigate('Protocolos');
-        }, 2000);
         Toast.show({
           type: 'success',
-          text1: 'Protocolo enviado com sucesso!',
-
-          
+          text1: 'Protocolo enviado com sucesso!',         
         });
+        setTimeout(() => {
+          navigation.navigate('Protocolos',{ atualizar: true });
+        }, 2500);
+
       } else {
         Toast.show({
           type: 'error',
@@ -141,11 +158,11 @@ export function RegistraProtocolo() {
 
   return (
     <ScrollView style={{ flex: 1, padding: 20 }}>
-      <TextInput placeholder="Título:" style={styles.input} value={titulo} onChangeText={setTitulo} />
-      <TextInput placeholder="Nome:" style={styles.input} value={nome} onChangeText={setNome} />
-      <TextInput placeholder="CPF:" keyboardType="phone-pad" style={styles.input} value={cpf} onChangeText={setCpf} />
-      <TextInput placeholder="Email:" keyboardType="email-address" style={styles.input} value={email} onChangeText={setEmail} />
-      <TextInput placeholder="Telefone:" keyboardType="phone-pad" style={styles.input} value={telefone} onChangeText={setTelefone} />
+      <TextInput placeholder="Título:" style={styles.input} value={titulo} onChangeText={setTitulo} maxLength={25}/>
+      <TextInput placeholder="Nome:" style={styles.input} value={nome} onChangeText={setNome} maxLength={50} />
+      <TextInput placeholder="CPF:" keyboardType="phone-pad" style={styles.input} value={cpf} onChangeText={setCpf} maxLength={11}/>
+      <TextInput placeholder="Email:" keyboardType="email-address" style={styles.input} value={email} onChangeText={setEmail} maxLength={50} />
+      <TextInput placeholder="Telefone:" keyboardType="phone-pad" style={styles.input} value={telefone} onChangeText={setTelefone} maxLength={11} />
       <TextInput
         style={styles.inputDescricao}
         multiline={true}
@@ -153,9 +170,8 @@ export function RegistraProtocolo() {
         placeholder="Descrição"
         value={descricao}
         onChangeText={setDescricao}
+        maxLength={255}
       />
-
-      <Toast position="center" />
 
       <View style={styles.iconContainer}>
         <TouchableOpacity onPress={handlePickImage} style={styles.iconButton}>

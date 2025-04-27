@@ -4,12 +4,22 @@ import Card from "./card";
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_BASE_URL } from "../config";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
 
 export default function App() {
   const [protocolos, setProtocolos] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const navigation = useNavigation();
+  const route = useRoute();
+
+useFocusEffect(
+  React.useCallback(() => {
+    if (route.params?.atualizar) {
+      recarregar();
+      navigation.setParams({ atualizar: false });
+    }
+  }, [route.params])
+);
 
   const abrirProtocolo = (protocoloId) => {
     navigation.getParent().navigate("Exibe_Protocolo", { protocoloId });
@@ -54,7 +64,7 @@ export default function App() {
                 : "https://via.placeholder.com/150"
             }
             titulo={protocolo.titulo}
-            descricao={protocolo.descricao}
+            descricao={protocolo.descricao.split(' ').slice(0, 40).join(' ') + ' ...'}
             status={protocolo.estado}
             color={protocolo.cor}
             protocolo={protocolo.id}

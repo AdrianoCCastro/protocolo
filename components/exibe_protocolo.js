@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from "react-native";
 import { API_BASE_URL } from "../config";
 import { useRoute } from "@react-navigation/native";
+import * as Animatable from 'react-native-animatable';
 
 export default function ExibeProtocolo() {
   const route = useRoute();
@@ -41,25 +42,39 @@ export default function ExibeProtocolo() {
     <View style={styles.container}>
       {protocolo ? (
         <>
-          <Text style={styles.title}>{protocolo.titulo}</Text>
-          <View style={styles.containerProtocolo}>
-                                
+         <Animatable.View delay={600} animation = "fadeInRight">
+            <Text style={styles.title}>{protocolo.titulo}</Text>
+         </Animatable.View>
+          
+          <Animatable.View delay={600} animation = "fadeInUp" style={styles.containerProtocolo}>
+          
             <Text style={styles.text}>{protocolo.descricao}</Text>
+                            
+            
             
             {images.length > 0 && (
               <ScrollView horizontal showsHorizontalScrollIndicator={true}>
                 {images.map((img, index) => (
                   <TouchableOpacity key={index} onPress={() => setImagemSelecionada(`${API_BASE_URL}${img.imagem}`)}>
-                    <Image
+                    
+                    <Animatable.Image
+                      animation = "flipInY"
+                      delay={index * 1000}
                       source={{ uri: `${API_BASE_URL}${img.imagem}` }}
                       style={styles.img}
                     />
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-            )}
-            <Text style={styles.status}>{protocolo.estado}</Text>
-          </View>
+            )}                          
+          </Animatable.View>
+          <Animatable.View delay={800} animation = "fadeInUp" style={[styles.footer, { backgroundColor: protocolo.cor }]}>                 
+              <View style={styles.footerItem}>
+                <Text style={styles.footerLabel}>Status</Text>
+                <Text style={styles.footerNumber}>{protocolo.estado}</Text>
+                
+              </View>
+          </Animatable.View>
         </>
       ) : (
         <Text>Protocolo não encontrado</Text>
@@ -115,7 +130,8 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#a1a1a1',
-    flex: 1,  
+    flex: 1,
+    paddingTop:30,
      
   },
   img: {
@@ -143,5 +159,28 @@ const styles = StyleSheet.create({
     width: "90%",
     height: "70%",
     borderRadius: 10,
+  },
+  footerItem: {
+    alignItems: "center",
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: 12,
+    width: '100%',
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+    paddingStart: '5%',
+    paddingEnd: '5%',
+    
+  },
+  footerNumber: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  footerLabel: {
+    fontSize: 12,
+    color: "#fff",
   },
 });
