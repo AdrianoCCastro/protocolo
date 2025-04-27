@@ -145,48 +145,48 @@ function LoginScreen({ navigation,onLogin,biometria, autenticar }) {
 
   return (
     <View style = {styles.container}>
-                <Animatable.View animation = 'fadeInLeft' delay={500} style = {styles.containerHeader}>
-                <Text style = {styles.message}>Bem-vindo(a)</Text>
-                </Animatable.View>
-    
-                <Animatable.View animation = 'fadeInUp' style = {styles.containerForm}>
-                    <Text styles = {styles.title}>Email</Text>    
-                    <TextInput
-                      placeholder="Digite um email..."
-                      style={styles.input}
-                      value={email}
-                      onChangeText={setEmail}
-                    />
-                        
-                    <Text styles = {styles.title}>Senha</Text>
-                    <TextInput
-                      placeholder="Digite a sua senha"
-                      style={styles.input}
-                      secureTextEntry
-                      value={senha}
-                      onChangeText={setSenha}
-                    />
-                        
-                    <TouchableOpacity style = {styles.button}
-                        onPress={realizarLogin}>
-                        <Text style = {styles.buttonText}>Acessar</Text>
-                    </TouchableOpacity>
-    
-                    <TouchableOpacity style = {styles.buttonRegister} onPress={() => navigation.navigate('Cadastrar')}>
-                        <Text style = {styles.registerText}>Não possui uma conta? Cadastre-se</Text>
-                    </TouchableOpacity>
-                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                      <Text>
-                        {biometria
-                          ? "Ou faça o login com biometria"
-                          : "Dispositivo não compatível com biometria"}
-                      </Text>
-                      <TouchableOpacity onPress={autenticar}>
-                        <Image source={require("./assets/digital.png")} style={styles.img} />
-                      </TouchableOpacity>
-                      <StatusBar style="auto" />
-                    </View>
-                </Animatable.View>
+      <Animatable.View animation = 'fadeInLeft' delay={500} style = {styles.containerHeader}>
+      <Text style = {styles.message}>Bem-vindo(a)</Text>
+      </Animatable.View>
+
+      <Animatable.View animation = 'fadeInUp' style = {styles.containerForm}>
+          <Text styles = {styles.title}>Email</Text>    
+          <TextInput
+            placeholder="Digite um email..."
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+          />
+              
+          <Text styles = {styles.title}>Senha</Text>
+          <TextInput
+            placeholder="Digite a sua senha"
+            style={styles.input}
+            secureTextEntry
+            value={senha}
+            onChangeText={setSenha}
+          />
+              
+          <TouchableOpacity style = {styles.button}
+              onPress={realizarLogin}>
+              <Text style = {styles.buttonText}>Acessar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style = {styles.buttonRegister} onPress={() => navigation.navigate('Cadastrar')}>
+              <Text style = {styles.registerText}>Não possui uma conta? Cadastre-se</Text>
+          </TouchableOpacity>
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <Text>
+              {biometria
+                ? "Ou faça o login com biometria"
+                : "Dispositivo não compatível com biometria"}
+            </Text>
+            <TouchableOpacity onPress={autenticar}>
+              <Image source={require("./assets/digital.png")} style={styles.img} />
+            </TouchableOpacity>
+            <StatusBar style="auto" />
+          </View>
+      </Animatable.View>
     </View>
   );
 }
@@ -211,10 +211,13 @@ export default function App() {
 
   return (
     <>
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!logado ? (
-          <>
+      {logado ? (
+        <NavigationContainer>
+          <StackLogado onLogout={() => setLogado(false)} />
+        </NavigationContainer>
+      ) : (
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Login">
               {({ navigation }) => (
                 <LoginScreen
@@ -226,20 +229,13 @@ export default function App() {
               )}
             </Stack.Screen>
             <Stack.Screen name="Cadastrar" component={Cadastrar} />
-          </>
-        ) : (
-          <Stack.Screen name="Main">
-            {() => <StackLogado onLogout={() => setLogado(false)} />}
-          </Stack.Screen>
-        )}
-      </Stack.Navigator>
-      
-    </NavigationContainer>
-    <Toast />
+          </Stack.Navigator>
+        </NavigationContainer>
+      )}
+      <Toast />
     </>
-    
-    
   );
+  
 }
 
 const styles = StyleSheet.create ({

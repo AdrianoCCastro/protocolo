@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     alignItems: "center",
-    backgroundColor: "rgb(30, 96, 219)",
+    backgroundColor: "#4169E1",
     
   },
 });
