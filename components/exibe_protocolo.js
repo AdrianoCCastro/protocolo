@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     color: '#a1a1a1',
     flex: 1,
     paddingTop:30,
+    fontSize: 16,
      
   },
   img: {

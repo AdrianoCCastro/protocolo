@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { API_BASE_URL } from "../config";
 import { useNavigation, useFocusEffect, useRoute } from "@react-navigation/native";
+import { View } from "react-native-animatable";
 
 export default function App() {
   const [protocolos, setProtocolos] = useState([]);
@@ -51,29 +52,32 @@ useFocusEffect(
     setRefreshKey(prev => prev + 1);
   };
 
-  return (
-    <>
-      
-      <ScrollView contentContainerStyle={styles.container}>
-        {protocolos.map((protocolo) => (
-          <Card
-            key={protocolo.id}
-            imgSrc={
-              protocolo.imagens_urls && protocolo.imagens_urls.length > 0
-                ? `${API_BASE_URL}/` + protocolo.imagens_urls[0].imagem
-                : "https://via.placeholder.com/150"
-            }
-            titulo={protocolo.titulo}
-            descricao={protocolo.descricao.split(' ').slice(0, 40).join(' ') + ' ...'}
-            status={protocolo.estado}
-            color={protocolo.cor}
-            protocolo={protocolo.id}
-            onUpdate={recarregar}
-            onPress={abrirProtocolo}
-          />
-        ))}
-      </ScrollView>
+  return (    
+         <>
+      <View style={{flex:1}}>
+          <ScrollView contentContainerStyle={styles.container}>
+            {protocolos.map((protocolo) => (
+              <Card
+                key={protocolo.id}
+                imgSrc={
+                  protocolo.imagens_urls && protocolo.imagens_urls.length > 0
+                    ? `${API_BASE_URL}/` + protocolo.imagens_urls[0].imagem
+                    : "https://via.placeholder.com/150"
+                }
+                titulo={protocolo.titulo}
+                descricao={protocolo.descricao.split(' ').slice(0, 40).join(' ') + ' ...'}
+                status={protocolo.estado}
+                color={protocolo.cor}
+                protocolo={protocolo.id}
+                onUpdate={recarregar}
+                onPress={abrirProtocolo}
+              />
+            ))}
+          </ScrollView>
+      </View>
+
     </>
+      
   );
 }
 
@@ -81,7 +85,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     alignItems: "center",
-    backgroundColor: "#4169E1",
-    
+    backgroundColor: "#4169E1",    
   },
 });
