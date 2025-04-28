@@ -83,8 +83,8 @@ export function Cadastrar() {
       
 
     return (
-        <ScrollView style={styles.container}>
-            <Text style={styles.title}>Cadastro</Text>
+      <View style={styles.container}>
+         <ScrollView style={styles.containerProtocolo}>           
             <TouchableOpacity onPress={handlePickImage}>
             <Image
                 source={
@@ -148,15 +148,19 @@ export function Cadastrar() {
             </View>
              <Toast position='center' />
         </ScrollView>
+      </View>
+       
         
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
-        flex: 1,
-        backgroundColor: "#fff",
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "flex-start",
+      padding: 20,
+      backgroundColor: "#4169E1",
     },
     title: {
         fontSize: 24,
@@ -168,17 +172,17 @@ const styles = StyleSheet.create({
         borderColor: '#ccc',
         borderWidth: 1,
         marginBottom: 15,
-        paddingHorizontal: 10,
+        paddingHorizontal: 10,        
         borderRadius: 5,
     },
     image: {
         width: 200,
         height: 200,
-        marginTop: 10,
+        marginTop: 50,
         marginBottom: 15,
         alignSelf: 'center',
         borderRadius: 100,
-        borderWidth: 7,            
+        borderWidth: 7,        
         borderColor: '#000',
     },
     iconContainer: {
@@ -187,5 +191,16 @@ const styles = StyleSheet.create({
         alignItems: "center", 
         marginVertical: 10,
         padding:20 
+      },
+      containerProtocolo: {
+        backgroundColor: '#FFF',
+        flex: 1,
+        width: '100%',
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25,
+        borderBottomLeftRadius: 25,
+        borderBottomRightRadius: 25,
+        paddingStart: '5%',
+        paddingEnd: '5%', 
       },
 });
