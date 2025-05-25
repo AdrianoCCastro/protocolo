@@ -1,29 +1,29 @@
-import {React} from "react";
-import { View, Text, Image, StyleSheet,Button,TouchableOpacity} from "react-native";
+import { React } from "react";
+import { View, Text, Image, StyleSheet, Button, TouchableOpacity } from "react-native";
 import { API_BASE_URL } from "../config";
 
 export default function Card({
   imgSrc,
   titulo,
-  descricao,  
+  descricao,
   status,
   color,
-  protocolo,
+  protocoloId,
   onUpdate,
   onPress
 }) {
   return (
-    <TouchableOpacity style={styles.card} onPress={() => onPress(protocolo)}>
+    <TouchableOpacity style={styles.card} onPress={() => onPress(protocoloId)}>
       <Image source={{ uri: imgSrc }} style={styles.image} />
       <View style={styles.body}>
         <Text style={styles.title}>{titulo}</Text>
         <Text style={styles.description}>{descricao}</Text>
       </View>
-      <View style={[styles.footer, { backgroundColor: color }]}>                 
+      <View style={[styles.footer, { backgroundColor: color }]}>
         <View style={styles.footerItem}>
           <Text style={styles.footerLabel}>Status</Text>
           <Text style={styles.footerNumber}>{status}</Text>
-          
+
         </View>
       </View>
     </TouchableOpacity>

@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Button } from "react-native";
 import { API_BASE_URL } from "../config";
 import { useRoute } from "@react-navigation/native";
 import * as Animatable from 'react-native-animatable';
+import { Ionicons } from "@expo/vector-icons";
+import BotaoEditar from "./btn_Editar";
+import DeletarProtocolo from "./deletarProtocolo";
+import Toast from "react-native-toast-message";
+
 
 export default function ExibeProtocolo() {
   const route = useRoute();
@@ -14,12 +19,12 @@ export default function ExibeProtocolo() {
 
   const buscaProtocoloPorId = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/processo/ExibeProtocolo/${protocoloId}/`, {
-        method: 'POST',
+      const response = await fetch(`${API_BASE_URL}/protocolo/${protocoloId}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({}),
+
       });
 
       if (!response.ok) {
@@ -28,7 +33,7 @@ export default function ExibeProtocolo() {
 
       const data = await response.json();
       setProtocolo(data);
-      setImages(data.imagens_urls || []);
+      setImages(data.imagens || []);
     } catch (error) {
       console.error("Erro ao buscar protocolo:", error);
     }
@@ -42,44 +47,50 @@ export default function ExibeProtocolo() {
     <View style={styles.container}>
       {protocolo ? (
         <>
-         <Animatable.View delay={600} animation = "fadeInRight">
+          <Animatable.View delay={600} animation="fadeInRight">
             <Text style={styles.title}>{protocolo.titulo}</Text>
-         </Animatable.View>
-          
-          <Animatable.View delay={600} animation = "fadeInUp" style={styles.containerProtocolo}>
-          
+          </Animatable.View>
+
+          <Animatable.View delay={600} animation="fadeInUp" style={styles.containerProtocolo}>
+
             <Text style={styles.text}>{protocolo.descricao}</Text>
-                            
-            
-            
+
+
+
             {images.length > 0 && (
               <ScrollView horizontal showsHorizontalScrollIndicator={true}>
                 {images.map((img, index) => (
-                  <TouchableOpacity key={index} onPress={() => setImagemSelecionada(`${API_BASE_URL}${img.imagem}`)}>
-                    
+                  <TouchableOpacity key={index} onPress={() => setImagemSelecionada(`${API_BASE_URL}${img.url}`)}>
                     <Animatable.Image
-                      animation = "flipInY"
+                      animation="flipInY"
                       delay={index * 1000}
-                      source={{ uri: `${API_BASE_URL}${img.imagem}` }}
+                      source={{ uri: `${API_BASE_URL}${img.url}` }}
                       style={styles.img}
                     />
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-            )}                          
+            )}
           </Animatable.View>
-          <Animatable.View delay={800} animation = "fadeInUp" style={[styles.footer, { backgroundColor: protocolo.cor }]}>                 
-              <View style={styles.footerItem}>
-                <Text style={styles.footerLabel}>Status</Text>
-                <Text style={styles.footerNumber}>{protocolo.estado}</Text>
-                
-              </View>
+          <Animatable.View delay={800} animation="fadeInUp" style={[styles.footer, { backgroundColor: protocolo.cor }]}>
+            <View style={styles.footerItem}>
+              <TouchableOpacity>
+                <DeletarProtocolo id={protocolo.id} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.footerItem}>
+              <Text style={styles.footerLabel}>Status</Text>
+              <Text style={styles.footerNumber}>{protocolo.estado}</Text>
+            </View>
+            <View style={styles.footerItem}>
+              <BotaoEditar id={protocolo.id} titulo={protocolo.titulo} descricao={protocolo.descricao} />
+            </View>
           </Animatable.View>
         </>
       ) : (
         <Text>Protocolo não encontrado</Text>
       )}
-      
+
 
       {imagemSelecionada && (
         <View style={styles.imageViewer}>
@@ -93,7 +104,9 @@ export default function ExibeProtocolo() {
           />
         </View>
       )}
+      <Toast />
     </View>
+
   );
 }
 
@@ -120,7 +133,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     paddingStart: '5%',
     paddingEnd: '5%',
-    justifyContent: 'space-between',  
+    justifyContent: 'space-between',
   },
   status: {
     color: '#a1a1a1',
@@ -131,9 +144,9 @@ const styles = StyleSheet.create({
   text: {
     color: '#a1a1a1',
     flex: 1,
-    paddingTop:30,
+    paddingTop: 30,
     fontSize: 16,
-     
+
   },
   img: {
     width: 100,
@@ -173,7 +186,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
     paddingStart: '5%',
     paddingEnd: '5%',
-    
+
   },
   footerNumber: {
     fontSize: 16,

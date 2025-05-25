@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useRoute } from '@react-navigation/native';
 import {
   StyleSheet,
   View,
@@ -20,6 +21,8 @@ import { API_BASE_URL } from "../config";
 
 export function RegistraProtocolo() {
 
+  const route = useRoute();
+  const { atualizar, id, titulo_param, descricao_param } = route.params || {};
 
   const [images, setImages] = useState([]);
   const [location, setLocation] = useState(null);
@@ -28,42 +31,54 @@ export function RegistraProtocolo() {
   const [email, setEmail] = useState(null);
   const [telefone, setTelefone] = useState(null);
   const [descricao, setDescricao] = useState(null);
-  const [usuarioId, setUsuarioId] = useState(null);
   const [titulo, setTitulo] = useState(null);
   const navigation = useNavigation();
- 
-  useEffect(() => {
-    const buscarUsuario = async () => {
-      const user = await AsyncStorage.getItem("usuario");
-      if (user) {
-        const userData = JSON.parse(user);
 
-        setNome(userData.first_name);
-        setCpf(userData.CPF);
-        setEmail(userData.email);
-        setTelefone(userData.telefone);
-      }
-    };
-    buscarUsuario();
-  }, []);
+  useEffect(() => {
+    if (atualizar) {
+      setTitulo(titulo_param);
+      setDescricao(descricao_param);
+      buscarUsuario();
+
+    } else {
+      buscarUsuario();
+      setTitulo(null);
+      setDescricao(null);
+    }
+  }, [atualizar]);
+
+
+  const buscarUsuario = async () => {
+    const user = await AsyncStorage.getItem("usuario");
+    if (user) {
+      const userData = JSON.parse(user);
+
+      setNome(userData.first_name);
+      setCpf(userData.cpf);
+      setEmail(userData.email);
+      setTelefone(userData.telefone);
+
+    }
+  };
+
 
 
   const handlePickImage = async () => {
-   
+
     if (images.length >= 5) {
       Toast.show({
-        type: 'error', 
+        type: 'error',
         text1: 'Limite de imagens atingido!',
         text2: 'Você só pode adicionar até 5 imagens.',
       });
       return;
     }
-  
+
     const uri = await pickImage();
     if (uri) {
       setImages((prev) => [...prev, { uri }]);
-  
-      
+
+
       if (prev.length + 1 === 5) {
         Toast.show({
           type: 'info',
@@ -82,24 +97,15 @@ export function RegistraProtocolo() {
     }
     let location = await Location.getCurrentPositionAsync({});
     setLocation(location.coords);
-    
+
   };
 
   const enviarProtocolo = async () => {
 
-    const formData = new FormData();    
-    const usuarioId = await AsyncStorage.getItem('usuario_id');
+    const formData = new FormData();
+    const usuarioSalvo = await AsyncStorage.getItem("usuario");
+    const idUsuario = JSON.parse(usuarioSalvo)['id']
 
-
-    if (!location) {
-      Toast.show({
-        type: 'error',
-        text1: 'Formulário sem localização',
-        text2: 'Selecione a localização por favor!',
-      });
-      return;
-    }
-    
     // Adiciona os dados ao formData
     formData.append("titulo", titulo);
     formData.append("nome", nome);
@@ -107,7 +113,7 @@ export function RegistraProtocolo() {
     formData.append("email", email);
     formData.append("telefone", telefone);
     formData.append("descricao", descricao);
-    formData.append("id_usuario", usuarioId);
+    formData.append("id_usuario", idUsuario);
     formData.append("latitude", location.latitude.toString());
     formData.append("longitude", location.longitude.toString());
     images.forEach((image, index) => {
@@ -118,49 +124,96 @@ export function RegistraProtocolo() {
       });
     });
 
-  
-    try {
-      const response = await fetch(`${API_BASE_URL}/processo/registrar_protocolo/`, {
-        method: "POST",
-        body: formData,
-        headers: {
-         
-        },
-      });
+    if (atualizar) {
+      try {
+        const response = await fetch(`${API_BASE_URL}/protocolo/${id}`, {
+          method: "PUT",
+          body: formData,
+          headers: {
 
-      const data = await response.json();
-            
-      if (response.ok) {
-        Toast.show({
-          type: 'success',
-          text1: 'Protocolo enviado com sucesso!',         
+          },
         });
-        setTimeout(() => {
-          navigation.navigate('Protocolos',{ atualizar: true });
-        }, 2500);
 
-      } else {
+        const data = await response.json();
+
+        if (response.ok) {
+          Toast.show({
+            type: 'success',
+            text1: 'Protocolo atualizado com sucesso!',
+          });
+          setTimeout(() => {
+            navigation.navigate('Protocolos', { atualizar: true });
+          }, 2500);
+
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Erro ao atualizar protocolo',
+            text2: data.error || 'Tente novamente mais tarde.',
+          });
+        }
+      } catch (error) {
+        console.log("Erro:", error);
         Toast.show({
           type: 'error',
-          text1: 'Erro ao enviar protocolo',
-          text2: data.error || 'Tente novamente mais tarde.',
+          text1: 'Erro de rede',
+          text2: error.message,
         });
       }
-    } catch (error) {
-      console.log("Erro:", error);
-      Toast.show({
-        type: 'error',
-        text1: 'Erro de rede',
-        text2: error.message,
-      });
-    }
-  };
 
+
+    } else {
+      if (!location) {
+        Toast.show({
+          type: 'error',
+          text1: 'Formulário sem localização',
+          text2: 'Selecione a localização por favor!',
+        });
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/add_protocolo/`, {
+          method: "POST",
+          body: formData,
+          headers: {
+
+          },
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          Toast.show({
+            type: 'success',
+            text1: 'Protocolo enviado com sucesso!',
+          });
+          setTimeout(() => {
+            navigation.navigate('Protocolos', { atualizar: true });
+          }, 2500);
+
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: 'Erro ao enviar protocolo',
+            text2: data.error || 'Tente novamente mais tarde.',
+          });
+        }
+      } catch (error) {
+        console.log("Erro:", error);
+        Toast.show({
+          type: 'error',
+          text1: 'Erro de rede',
+          text2: error.message,
+        });
+      }
+    };
+  }
   return (
     <ScrollView style={{ flex: 1, padding: 20 }}>
-      <TextInput placeholder="Título:" style={styles.input} value={titulo} onChangeText={setTitulo} maxLength={25}/>
+      <TextInput placeholder="Título:" style={styles.input} value={titulo} onChangeText={setTitulo} maxLength={25} />
       <TextInput placeholder="Nome:" style={styles.input} value={nome} onChangeText={setNome} maxLength={50} />
-      <TextInput placeholder="CPF:" keyboardType="phone-pad" style={styles.input} value={cpf} onChangeText={setCpf} maxLength={11}/>
+      <TextInput placeholder="CPF:" keyboardType="phone-pad" style={styles.input} value={cpf} onChangeText={setCpf} maxLength={11} />
       <TextInput placeholder="Email:" keyboardType="email-address" style={styles.input} value={email} onChangeText={setEmail} maxLength={50} />
       <TextInput placeholder="Telefone:" keyboardType="phone-pad" style={styles.input} value={telefone} onChangeText={setTelefone} maxLength={11} />
       <TextInput
@@ -182,7 +235,7 @@ export function RegistraProtocolo() {
         </TouchableOpacity>
       </View>
 
-      
+
       {images.length > 0 && (
         <ScrollView horizontal showsHorizontalScrollIndicator={true} style={{ marginBottom: 10 }}>
           {images.map((img, index) => (
@@ -210,7 +263,7 @@ export function RegistraProtocolo() {
       )}
 
       <View style={styles.botao}>
-        <Button title="Salvar" onPress={enviarProtocolo} />
+        <Button title={atualizar ? 'Editar Protocolo' : 'Novo Protocolo'} onPress={enviarProtocolo} />
       </View>
     </ScrollView>
   );
@@ -244,13 +297,13 @@ const styles = StyleSheet.create({
   iconButton: {
     padding: 10,
   },
-  botao:{
-    marginTop: 20, 
+  botao: {
+    marginTop: 20,
     padding: 25,
   },
-  mapa:{ 
+  mapa: {
     width: "100%",
-    height: 200, 
+    height: 200,
     marginTop: 10
   }
 });
