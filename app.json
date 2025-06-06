@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "Autenticador",
-    "slug": "Autenticador",
+    "name": "Gerenciador de protocolo",
+    "slug": "gerenciador-de-protocolo",
+    "scheme": "gerenciadordeprotocolo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,6 +18,9 @@
       "bundleIdentifier": "com.seuapp.bundle",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Precisamos acessar sua galeria de fotos."
+      },
+      "runtimeVersion": {
+        "policy": "appVersion"
       }
     },
     "android": {
@@ -25,15 +29,20 @@
         "backgroundColor": "#ffffff",
         "package": "com.seuapp.package",
         "permissions": [
+          "READ_EXTERNAL_STORAGE",
           "READ_EXTERNAL_STORAGE"
         ]
       },
       "permissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.ACCESS_MEDIA_LOCATION"
       ],
-      "package": "com.meuapp.build"
+      "package": "com.meuapp.build",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -46,7 +55,18 @@
           "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
           "isAccessMediaLocationEnabled": true
         }
-      ]
-    ]
+      ],
+      "expo-secure-store",
+      "expo-web-browser"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "c62fe841-b3af-4837-8233-a8ac63e9cc97"
+      }
+    },
+    "owner": "jefftdb",
+    "updates": {
+      "url": "https://u.expo.dev/c62fe841-b3af-4837-8233-a8ac63e9cc97"
+    }
   }
 }

@@ -22,7 +22,7 @@ import { API_BASE_URL } from "../config";
 export function RegistraProtocolo() {
 
   const route = useRoute();
-  const { atualizar, id, titulo_param, descricao_param } = route.params || {};
+  const { atualizar, id, titulo_param, latitude_param, longitude_param, descricao_param } = route.params || {};
 
   const [images, setImages] = useState([]);
   const [location, setLocation] = useState(null);
@@ -35,17 +35,22 @@ export function RegistraProtocolo() {
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (atualizar) {
+    buscarUsuario();
+
+    if (atualizar && latitude_param && longitude_param) {
+      setLocation({
+        latitude: parseFloat(latitude_param),
+        longitude: parseFloat(longitude_param),
+      });
       setTitulo(titulo_param);
       setDescricao(descricao_param);
-      buscarUsuario();
-
     } else {
-      buscarUsuario();
+      getLocation();
       setTitulo(null);
       setDescricao(null);
     }
   }, [atualizar]);
+
 
 
   const buscarUsuario = async () => {
@@ -92,12 +97,19 @@ export function RegistraProtocolo() {
   const getLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
-      alert("Permissão para acessar a localização foi negada");
+      Toast.show({
+        type: 'error',
+        text1: 'Permissão negada',
+        text2: 'Você precisa permitir o acesso à localização.',
+      });
       return;
     }
-    let location = await Location.getCurrentPositionAsync({});
-    setLocation(location.coords);
 
+    let currentLocation = await Location.getCurrentPositionAsync({});
+    setLocation({
+      latitude: currentLocation.coords.latitude,
+      longitude: currentLocation.coords.longitude,
+    });
   };
 
   const enviarProtocolo = async () => {
@@ -137,6 +149,7 @@ export function RegistraProtocolo() {
         const data = await response.json();
 
         if (response.ok) {
+
           Toast.show({
             type: 'success',
             text1: 'Protocolo atualizado com sucesso!',

@@ -15,6 +15,7 @@ import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL } from "./config";
 import ExibeProtocolo from "./components/exibe_protocolo";
+import LoginGoogle from "./components/login_google";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -95,7 +96,7 @@ function LoginScreen({ navigation, onLogin, biometria, autenticar }) {
       });
 
       const data = await response.json();
-      console.log("Resposta da API:", data);
+
 
       if (response.ok) {
         const usuario = data.usuario;
@@ -159,6 +160,7 @@ function LoginScreen({ navigation, onLogin, biometria, autenticar }) {
         <TouchableOpacity style={styles.buttonRegister} onPress={() => navigation.navigate('Cadastrar')}>
           <Text style={styles.registerText}>Não possui uma conta? Cadastre-se</Text>
         </TouchableOpacity>
+        <LoginGoogle autenticar={() => setLogado()} />
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
           <Text>
             {biometria
@@ -238,7 +240,7 @@ const styles = StyleSheet.create({
     color: '#FFF'
   },
   containerForm: {
-    backgroundColor: '#FFF',
+    backgroundColor: '#f5f5f5',
     flex: 1,
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,

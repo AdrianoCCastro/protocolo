@@ -83,7 +83,12 @@ export default function ExibeProtocolo() {
               <Text style={styles.footerNumber}>{protocolo.estado}</Text>
             </View>
             <View style={styles.footerItem}>
-              <BotaoEditar id={protocolo.id} titulo={protocolo.titulo} descricao={protocolo.descricao} />
+              <BotaoEditar
+                id={protocolo.id}
+                titulo={protocolo.titulo}
+                descricao={protocolo.descricao}
+                latitude={protocolo.latitude}
+                longitude={protocolo.longitude} />
             </View>
           </Animatable.View>
         </>
