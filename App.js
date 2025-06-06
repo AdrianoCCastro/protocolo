@@ -67,12 +67,14 @@ function StackLogado({ onLogout }) {
 // Tela de Logout
 function LogoutScreen({ onLogout }) {
   return (
-    <View style={styles.screen}>
-      <Text>Tem certeza que deseja sair?</Text>
-      <TouchableOpacity style={styles.button} onPress={onLogout}>
-        <Text style={{ color: "white" }}>Sim</Text>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      style={styles.button}
+      onPress={async () => {
+        await AsyncStorage.removeItem("usarBiometria");
+        onLogout();
+      }}>
+      <Text style={{ color: "white" }}>Sim</Text>
+    </TouchableOpacity>
   );
 }
 
@@ -109,7 +111,7 @@ function LoginScreen({ navigation, onLogin, biometria, autenticar }) {
           text1: 'Login realizado com sucesso!',
           text2: 'Aguarde...',
         });
-
+        await AsyncStorage.setItem("usarBiometria", "true");
         await new Promise(resolve => setTimeout(resolve, 2000));
         onLogin();
       } else {
@@ -160,7 +162,7 @@ function LoginScreen({ navigation, onLogin, biometria, autenticar }) {
         <TouchableOpacity style={styles.buttonRegister} onPress={() => navigation.navigate('Cadastrar')}>
           <Text style={styles.registerText}>Não possui uma conta? Cadastre-se</Text>
         </TouchableOpacity>
-        <LoginGoogle autenticar={() => setLogado()} />
+        {/*<LoginGoogle autenticar={() => setLogado()} /> */}
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
           <Text>
             {biometria
@@ -184,9 +186,23 @@ export default function App() {
   useEffect(() => {
     (async () => {
       const compativel = await LocalAuthentication.hasHardwareAsync();
+      const salvo = await AsyncStorage.getItem("usarBiometria");
+
+      if (compativel && salvo === "true") {
+        const resultado = await LocalAuthentication.authenticateAsync({
+          promptMessage: "Autentique-se para entrar",
+          fallbackLabel: "Usar senha",
+        });
+
+        if (resultado.success) {
+          setLogado(true);
+        }
+      }
+
       setBiometria(compativel);
     })();
   }, []);
+
 
   const autenticar = async () => {
     const authentication = await LocalAuthentication.authenticateAsync();

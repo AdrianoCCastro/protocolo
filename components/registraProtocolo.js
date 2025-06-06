@@ -45,7 +45,6 @@ export function RegistraProtocolo() {
       setTitulo(titulo_param);
       setDescricao(descricao_param);
     } else {
-      getLocation();
       setTitulo(null);
       setDescricao(null);
     }
