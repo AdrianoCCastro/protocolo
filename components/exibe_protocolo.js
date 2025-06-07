@@ -58,7 +58,7 @@ export default function ExibeProtocolo() {
 
 
             {images.length > 0 && (
-              <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+              <View style={styles.containerImg}>
                 {images.map((img, index) => (
                   <TouchableOpacity key={index} onPress={() => setImagemSelecionada(`${API_BASE_URL}${img.url}`)}>
                     <Animatable.Image
@@ -69,7 +69,7 @@ export default function ExibeProtocolo() {
                     />
                   </TouchableOpacity>
                 ))}
-              </ScrollView>
+              </View>
             )}
           </Animatable.View>
           <Animatable.View delay={800} animation="fadeInUp" style={[styles.footer, { backgroundColor: protocolo.cor }]}>
@@ -140,6 +140,16 @@ const styles = StyleSheet.create({
     paddingEnd: '5%',
     justifyContent: 'space-between',
   },
+  containerImg: {
+    backgroundColor: '#FFF',
+    width: '100%',
+    paddingStart: '5%',
+    paddingEnd: '5%',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    padding: 10,
+  },
   status: {
     color: '#a1a1a1',
     fontSize: 16,
@@ -158,6 +168,10 @@ const styles = StyleSheet.create({
     height: 100,
     marginRight: 10,
     borderRadius: 8,
+    border: 'solid',
+    borderWidth: 3,
+    marginBottom: 15,
+
   },
   imageViewer: {
     position: "absolute",
