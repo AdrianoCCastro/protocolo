@@ -83,7 +83,9 @@ export function Cadastrar() {
 
 
   return (
+
     <View style={styles.container}>
+      <Toast position='center' />
       <ScrollView style={styles.containerProtocolo}>
         <TouchableOpacity onPress={handlePickImage}>
           <Image
@@ -146,7 +148,7 @@ export function Cadastrar() {
             <Ionicons name="save-outline" size={32} color="black" />
           </TouchableOpacity>
         </View>
-        <Toast position='center' />
+
       </ScrollView>
     </View>
 
